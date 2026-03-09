@@ -29,37 +29,27 @@ const Hero = () => {
           <ArrowRight size={14} />
         </motion.div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-slate-900 dark:text-white mb-10 text-balance leading-[1.05]"
-        >
-          AI-Powered Learning Infrastructure for <span className="gradient-text">Smarter Education</span>
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 max-w-3xl mx-auto mb-12 text-balance leading-relaxed"
-        >
-          Transform how organizations create, deliver, and scale learning with TeachGrid’s intelligent platform. Trusted by leading institutions worldwide.
-        </motion.p>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto"
         >
-          <button className="btn-primary px-10 py-4 text-lg w-full sm:w-auto flex items-center justify-center gap-2">
-            Get Started
-            <ArrowRight size={18} />
-          </button>
-          <button className="btn-ghost px-10 py-4 text-lg border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 w-full sm:w-auto">
-            Book a Demo
-          </button>
+          <h1 className="text-6xl md:text-8xl font-bold tracking-tight text-slate-900 dark:text-white mb-8 leading-[1.1]">
+            Your next breakthrough,<br />powered by AI
+          </h1>
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+            TeachGrid is where powerful AI meets practical educational solutions — so you can teach smarter.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <button className="bg-slate-950 dark:bg-white text-white dark:text-slate-950 px-8 py-4 rounded-full text-lg font-bold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all">
+              Request a demo
+            </button>
+            <button className="text-slate-900 dark:text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border-b border-transparent hover:border-slate-200">
+              Explore products
+            </button>
+          </div>
         </motion.div>
 
         {/* Floating Mockup / Visual */}

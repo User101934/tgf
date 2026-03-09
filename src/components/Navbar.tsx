@@ -134,6 +134,14 @@ const COMPANY_LINKS = [
   }
 ];
 
+const navItems = [
+  { label: 'Products', href: '#products' },
+  { label: 'Solutions', href: '#solutions' },
+  { label: 'Research', href: '#research' },
+  { label: 'Resources', href: '#resources' },
+  { label: 'Company', href: '#company' },
+];
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [activeMenu, setActiveMenu] = React.useState<string | null>(null);

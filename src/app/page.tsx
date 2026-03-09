@@ -2,7 +2,11 @@ import React from 'react';
 import { Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import SocialProof from '@/components/SocialProof';
+import ValueProps from '@/components/ValueProps';
+import InteractiveShowcase from '@/components/InteractiveShowcase';
 import FeatureGrid from '@/components/FeatureGrid';
+import IndustryCarousel from '@/components/IndustryCarousel';
 import PlatformSection from '@/components/PlatformSection';
 import Pricing from '@/components/Pricing';
 import Footer from '@/components/Footer';
@@ -13,22 +17,11 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        <SocialProof />
+        <ValueProps />
+        <InteractiveShowcase />
         <FeatureGrid />
-
-        {/* Social Proof Bar */}
-        <section className="py-12 bg-white dark:bg-slate-900 border-y border-slate-100 dark:border-slate-800">
-          <div className="container mx-auto px-6">
-            <p className="text-center text-sm font-bold uppercase tracking-widest text-slate-400 mb-10">Trusted by world-class institutions</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-16 gap-y-10 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-              <span className="text-2xl font-black text-slate-900 dark:text-white">STANFORD</span>
-              <span className="text-2xl font-black text-slate-900 dark:text-white">HARVARD</span>
-              <span className="text-2xl font-black text-slate-900 dark:text-white">MIT</span>
-              <span className="text-2xl font-black text-slate-900 dark:text-white">BERKELEY</span>
-              <span className="text-2xl font-black text-slate-900 dark:text-white">OXFORD</span>
-            </div>
-          </div>
-        </section>
-
+        <IndustryCarousel />
         <PlatformSection />
 
         {/* Solutions Highlight */}
