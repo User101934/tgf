@@ -1,0 +1,1709 @@
+/* ==========================================================================
+   TEACHGRID COHERE UI OVERHAUL - CONSOLIDATED CODES
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. src/app/globals.css
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
+:root {
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --background: #fdfdfd;
+  --foreground: #0f172a;
+
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+
+  --border: rgba(15, 23, 42, 0.08);
+  --input: rgba(15, 23, 42, 0.08);
+  --ring: #4f46e5;
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: #020617;
+  --foreground: #f8fafc;
+
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+
+  --border: rgba(248, 250, 252, 0.1);
+  --input: rgba(248, 250, 252, 0.1);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground selection:bg-indigo-100 selection:text-indigo-900 relative min-h-screen text-[15px] antialiased;
+    font-family: var(--font-sans);
+  }
+
+  body::before {
+    content: "";
+    @apply fixed inset-0 z-[9999] pointer-events-none opacity-[0.02] dark:opacity-[0.04];
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-size: 150px 150px;
+  }
+}
+
+/* Custom Utilities for Cohere-like style */
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border-b border-white/20 dark:bg-slate-900/70 dark:border-slate-800/20;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-linear-to-r from-indigo-600 to-purple-600;
+  }
+
+  .btn-primary {
+    @apply px-6 py-2.5 rounded-full bg-linear-to-r from-indigo-600 to-purple-600 text-white font-medium hover:shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply px-6 py-2.5 rounded-full text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-all font-medium;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-slate-200 dark:bg-slate-800 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-300 dark:bg-slate-700;
+  }
+}
+
+/* Hide Next.js error overlay portal */
+nextjs-portal {
+  display: none !important;
+}
+
+/* ==========================================================================
+   2. src/app/layout.tsx
+   ========================================================================== */
+
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+import { VisualEditsMessenger } from "orchids-visual-edits";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "TeachGrid - AI-powered Learning Platform",
+  description: "The only learning platform you need to Transform Education. Create, deliver, and assess learning content in seconds.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+      </head>
+      <body
+        className="antialiased"
+      >
+        {children}
+        <VisualEditsMessenger />
+      </body>
+    </html>
+  );
+}
+
+/* ==========================================================================
+   3. src/app/page.tsx
+   ========================================================================== */
+
+import React from 'react';
+import { ArrowRight } from 'lucide-react';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import SocialProof from '@/components/SocialProof';
+import ValueProps from '@/components/ValueProps';
+import PlatformSection from '@/components/PlatformSection';
+import IndustryCarousel from '@/components/IndustryCarousel';
+import PlatformShowcase from '@/components/PlatformShowcase';
+import InteractiveShowcase from '@/components/InteractiveShowcase';
+import SuccessStory from '@/components/SuccessStory';
+import News from '@/components/News';
+import Footer from '@/components/Footer';
+
+export default function Home() {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <Hero />
+        <SocialProof />
+        <ValueProps />
+        <PlatformSection />
+        <IndustryCarousel />
+        <PlatformShowcase />
+        <InteractiveShowcase />
+        <SuccessStory />
+        <News />
+
+        {/* Final CTA */}
+        <section className="relative py-32 bg-white overflow-hidden border-t border-slate-100">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-indigo-500/5 blur-[120px] rounded-full -z-10" />
+          <div className="container mx-auto px-6 text-center">
+            <h2 className="text-4xl md:text-7xl font-serif tracking-tight text-[#111110] mb-12 leading-[1.05]">
+              Ready to transform <br className="hidden md:block" /> your learning experience?
+            </h2>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+              <button className="bg-black text-white px-12 py-5 text-xl rounded-full font-medium shadow-2xl shadow-black/10 hover:bg-black/90 transition-all active:scale-[0.98]">
+                Get Started Free
+              </button>
+              <button className="text-xl font-medium text-slate-600 hover:text-black transition-colors flex items-center gap-2 group">
+                Watch TeachGrid in Action
+                <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+/* ==========================================================================
+   4. src/components/Navbar.tsx
+   ========================================================================== */
+
+"use client";
+
+import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Menu, ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+/* ── Dropdown content definitions ── */
+const platformMenu = {
+  left: [
+    {
+      heading: 'TEACHGRID CAMPUS',
+      desc: 'The comprehensive AI infrastructure designed for universities and large-scale higher education.',
+    },
+    {
+      heading: 'TEACHGRID SPARK',
+      desc: 'A nimble, high-performance platform for training institutes, bootcamps, and agile learning teams.',
+    },
+    {
+      heading: 'LUMI AI ✦',
+      desc: 'Enterprise-grade AI agents for automated grading, 24/7 student support, and intelligent content creation.',
+    },
+  ],
+  middle: {
+    heading: 'LEARNING & DELIVERY',
+    links: [
+      'Smart Learning Management',
+      'Cohort Management',
+      'Live Sessions',
+      'Calendar',
+      'Whiteboard AI ✦',
+      'Virtual Labs',
+      'Microlearning Studio',
+      'Community',
+      'Mobile-Friendly Experience',
+    ],
+    heading2: 'EXPERIENCE PORTALS',
+    links2: [
+      'LXP (Learner Portal)',
+      'MXP (Mentor Portal)',
+      'Learner Feedback Submission',
+      'Personalized Dashboard',
+    ],
+  },
+  right: {
+    heading: 'ASSESSMENT',
+    links: [
+      'Quizzes & Assignments',
+      'Live Proctoring',
+      'Grading',
+      'Polls & Surveys',
+      'Certificates & Certificate Designer',
+      'Attendance',
+    ],
+    heading2: 'INTELLIGENCE',
+    links2: ['AI Features & AI Agents ✦', 'Intelligent Analytics'],
+    heading3: 'ENGAGEMENT',
+    links3: ['Leaderboard & Badges'],
+    heading4: 'ADMINISTRATION',
+    links4: ['Billing Desk', 'Integrations', 'Admin Controls', 'System Settings'],
+  },
+};
+
+const solutionsMenu = {
+  left: {
+    heading: 'TEACHGRID FOR',
+    links: ['Organizations', 'Colleges & Universities', 'Institutes & Academies'],
+  },
+  middle: {
+    heading: 'EXTENDED SOLUTIONS',
+    links: ['Instructional Design', 'AI for Education', 'White-labelled Solution', 'API Solution'],
+  },
+  right: {
+    heading: 'INDUSTRY',
+    links: ['Software', 'Finance', 'Healthcare', 'Education', 'Consulting', 'Tech / IT Services', 'Manufacturing'],
+  },
+};
+
+const resourcesMenu = {
+  left: {
+    heading: 'SUPPORT & CONTENT',
+    links: ['Documentation', 'Help Center', 'Community & Q/A', 'Blog & Insights', 'Release Notes'],
+  },
+  right: {
+    heading: 'CUSTOMER FEEDBACK',
+    links: ['Submit Feedback', 'Feature Requests', 'Product Suggestions'],
+  },
+};
+
+const companyMenu = {
+  left: {
+    links: ['About Us', 'Case Studies', 'Customer Reviews', 'Security', 'Legal'],
+  },
+  right: {
+    links: ['Customers', 'Testimonials', 'Careers', 'Contact', 'Comparison'],
+  },
+};
+
+/* ── Reusable dropdown link style ── */
+const DropLink = ({ children }: { children: React.ReactNode }) => (
+  <Link href="#" className="block text-[13.5px] text-[#4a5568] hover:text-[#5b47e0] transition-colors duration-100 py-[4px] leading-snug">
+    {children}
+  </Link>
+);
+
+const DropHeading = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-[10.5px] font-bold tracking-[0.13em] uppercase text-[#94a3b8] mb-2.5 mt-6 first:mt-0">
+    {children}
+  </p>
+);
+
+/* ── Main Navbar ── */
+const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const openDropdown = (label: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setActiveDropdown(label);
+  };
+
+  const closeDropdown = () => {
+    closeTimer.current = setTimeout(() => setActiveDropdown(null), 120);
+  };
+
+  const navItems = [
+    { label: 'Platform', hasDropdown: true },
+    { label: 'Solutions', hasDropdown: true },
+    { label: 'Pricing', hasDropdown: false },
+    { label: 'Resources', hasDropdown: true },
+    { label: 'Company', hasDropdown: true },
+  ];
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-50">
+      {/* Main Navigation */}
+      <nav
+        className={cn(
+          "transition-all duration-300 border-b bg-white",
+          isScrolled
+            ? "border-slate-100 shadow-[0_1px_0_0_rgba(0,0,0,0.06)]"
+            : "border-transparent"
+        )}
+      >
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-[68px]">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center flex-shrink-0">
+            <img src="/logo.png" alt="Teachgrid Logo" className="h-9 w-auto" />
+          </Link>
+
+          {/* Nav Links - Center */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {navItems.map((item) => (
+              <div
+                key={item.label}
+                className="relative"
+                onMouseEnter={() => item.hasDropdown && openDropdown(item.label)}
+                onMouseLeave={closeDropdown}
+              >
+                <button
+                  className={cn(
+                    "flex items-center gap-1 px-4 py-2 text-[14.5px] font-medium rounded-lg transition-colors duration-150",
+                    activeDropdown === item.label
+                      ? "text-[#0f172a]"
+                      : "text-[#4a5568] hover:text-[#0f172a]"
+                  )}
+                >
+                  {item.label}
+                  {item.hasDropdown && (
+                    <ChevronDown
+                      size={13}
+                      className={cn(
+                        "transition-transform duration-200 mt-px",
+                        activeDropdown === item.label ? "rotate-180 opacity-70" : "opacity-40"
+                      )}
+                    />
+                  )}
+                </button>
+
+                {/* Dropdown Panels */}
+                <AnimatePresence>
+                  {item.hasDropdown && activeDropdown === item.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                      transition={{ duration: 0.14, ease: 'easeOut' }}
+                      onMouseEnter={() => openDropdown(item.label)}
+                      onMouseLeave={closeDropdown}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white rounded-2xl overflow-hidden"
+                      style={{
+                        minWidth: item.label === 'Platform' ? 800 : item.label === 'Solutions' ? 680 : 500,
+                        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.07), 0 16px 48px -8px rgba(0,0,0,0.14), 0 0 0 1px rgba(0,0,0,0.06)',
+                      }}
+                    >
+                      {/* Platform Mega Menu */}
+                      {item.label === 'Platform' && (
+                        <div className="grid grid-cols-[210px_1fr_1fr] gap-0">
+                          {/* Left: product lines */}
+                          <div className="bg-[#f8f9fc] p-6 border-r border-[#eef0f5] space-y-5">
+                            {platformMenu.left.map((prod) => (
+                              <div key={prod.heading}>
+                                <p className="text-[11px] font-bold tracking-[0.14em] uppercase text-[#1a202c] mb-1.5">{prod.heading}</p>
+                                <p className="text-[13px] text-[#64748b] leading-[1.55]">{prod.desc}</p>
+                              </div>
+                            ))}
+                          </div>
+                          {/* Middle */}
+                          <div className="p-6 border-r border-[#eef0f5]">
+                            <DropHeading>{platformMenu.middle.heading}</DropHeading>
+                            {platformMenu.middle.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                            <DropHeading>{platformMenu.middle.heading2}</DropHeading>
+                            {platformMenu.middle.links2.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                          {/* Right */}
+                          <div className="p-6">
+                            <DropHeading>{platformMenu.right.heading}</DropHeading>
+                            {platformMenu.right.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                            <DropHeading>{platformMenu.right.heading2}</DropHeading>
+                            {platformMenu.right.links2.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                            <DropHeading>{platformMenu.right.heading3}</DropHeading>
+                            {platformMenu.right.links3.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                            <DropHeading>{platformMenu.right.heading4}</DropHeading>
+                            {platformMenu.right.links4.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Solutions Menu */}
+                      {item.label === 'Solutions' && (
+                        <div className="grid grid-cols-3 gap-0 p-6">
+                          <div className="pr-6 border-r border-[#eef0f5]">
+                            <DropHeading>{solutionsMenu.left.heading}</DropHeading>
+                            {solutionsMenu.left.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                          <div className="px-6 border-r border-[#eef0f5]">
+                            <DropHeading>{solutionsMenu.middle.heading}</DropHeading>
+                            {solutionsMenu.middle.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                          <div className="pl-6">
+                            <DropHeading>{solutionsMenu.right.heading}</DropHeading>
+                            {solutionsMenu.right.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Resources Menu */}
+                      {item.label === 'Resources' && (
+                        <div className="grid grid-cols-2 gap-0 p-6">
+                          <div className="pr-6 border-r border-[#eef0f5]">
+                            <DropHeading>{resourcesMenu.left.heading}</DropHeading>
+                            {resourcesMenu.left.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                          <div className="pl-6">
+                            <DropHeading>{resourcesMenu.right.heading}</DropHeading>
+                            {resourcesMenu.right.links.map((l) => <DropLink key={l}>{l}</DropLink>)}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Company Menu */}
+                      {item.label === 'Company' && (
+                        <div className="p-6">
+                          <DropHeading>COMPANY INFO</DropHeading>
+                          <div className="grid grid-cols-2 gap-x-12">
+                            <div>{companyMenu.left.links.map((l) => <DropLink key={l}>{l}</DropLink>)}</div>
+                            <div>{companyMenu.right.links.map((l) => <DropLink key={l}>{l}</DropLink>)}</div>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Buttons - Right */}
+          <div className="flex items-center gap-2">
+            <Link
+              href="/login"
+              className="hidden sm:block text-[14.5px] font-medium text-[#4a5568] hover:text-[#0f172a] transition-colors px-4 py-2 rounded-lg hover:bg-slate-50"
+            >
+              Login
+            </Link>
+            <Link
+              href="/get-started"
+              className="bg-[#5b47e0] hover:bg-[#4a38cc] text-white px-5 py-2.5 rounded-full text-[14.5px] font-semibold transition-all active:scale-[0.98] shadow-sm shadow-indigo-500/30"
+            >
+              Get Started
+            </Link>
+
+            {/* Mobile Toggle */}
+            <button
+              className="md:hidden p-2 text-slate-600 hover:text-black"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-200 p-6 flex flex-col gap-4 shadow-xl"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href="#"
+                className="text-lg font-medium text-slate-900 py-2 border-b border-slate-50 flex items-center justify-between"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.label}
+                {item.hasDropdown && <ChevronDown size={16} className="opacity-40" />}
+              </Link>
+            ))}
+            <div className="flex flex-col gap-3 pt-4">
+              <Link
+                href="/login"
+                className="text-center py-3 rounded-xl border border-slate-200 font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                href="/get-started"
+                className="text-center py-3 rounded-xl bg-[#5b47e0] text-white font-semibold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Get Started
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default Navbar;
+
+
+/* ==========================================================================
+   5. src/components/Hero.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+
+const Hero = () => {
+  return (
+    <section className="relative pt-40 pb-20 bg-white overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-6">
+        {/* Content */}
+        <div className="max-w-4xl mx-auto text-center mb-20">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-serif text-[clamp(48px,8vw,100px)] leading-[0.95] tracking-[-0.03em] text-[#111110] mb-10"
+          >
+            AI-powered <br />
+            Learning for <br />
+            Smarter Education.
+          </motion.h1>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6"
+          >
+            <Link
+              href="/get-started"
+              className="bg-[#111110] text-white px-8 py-4 rounded-full text-lg font-medium hover:bg-black/90 transition-all active:scale-[0.98]"
+            >
+              Start Learning
+            </Link>
+            <Link
+              href="/demo"
+              className="group flex items-center gap-2 text-lg font-medium text-slate-900 border-b border-transparent hover:border-black transition-all"
+            >
+              Request a demo
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Visuals - Side by Side Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Card 1: Collaborative Learning */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="relative aspect-[4/3] rounded-[2.5rem] overflow-hidden group border border-slate-100 shadow-2xl"
+          >
+            <img
+              src="/images/grid-abstract.png"
+              alt="Collaborative AI Learning"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+
+            {/* Floating Tags */}
+            <div className="absolute top-8 left-8 flex flex-col gap-3">
+              <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20 flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-sm font-semibold tracking-tight">Live Cohorts</span>
+              </div>
+              <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20">
+                <span className="text-sm font-bold">97.4% Completion Rate</span>
+              </div>
+            </div>
+
+            <div className="absolute bottom-10 left-10 right-10">
+              <div className="bg-[#111110]/80 backdrop-blur-xl p-6 rounded-2xl border border-white/10 text-white">
+                <p className="text-sm font-medium opacity-60 mb-2 uppercase tracking-widest text-emerald-400">Collaborative</p>
+                <h3 className="text-2xl font-serif">Create and deliver learning content at scale.</h3>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Card 2: Strategic Insights */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="relative aspect-[4/3] rounded-[2.5rem] overflow-hidden group border border-slate-100 shadow-2xl"
+          >
+            <img
+              src="/images/professional-lifestyle.png"
+              alt="Strategic Insights"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors duration-500" />
+
+            {/* Floating Tags */}
+            <div className="absolute top-8 right-8 flex flex-col items-end gap-3">
+              <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-lg border border-white/20">
+                <span className="text-sm font-bold">100+ Happy Clients ⭐</span>
+              </div>
+              <div className="bg-indigo-600 px-4 py-2 rounded-full shadow-lg text-white">
+                <span className="text-sm font-semibold">AI-Powered ✨</span>
+              </div>
+            </div>
+
+            <div className="absolute bottom-10 left-10 right-10">
+              <div className="bg-white/80 backdrop-blur-xl p-6 rounded-2xl border border-slate-200 text-[#111110]">
+                <p className="text-sm font-medium opacity-60 mb-2 uppercase tracking-widest text-indigo-600">Education Ready</p>
+                <h3 className="text-2xl font-serif">Impact-driven learning. Zero friction delivery.</h3>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
+
+
+/* ==========================================================================
+   6. src/components/SocialProof.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+
+const SocialProof = () => {
+    const phrases = [
+        'Together, We Learn Better',
+        'The Future Belongs to the Intelligent',
+        'Smarter Learning Starts Here',
+        'Powered by Intelligence',
+        'Learning Never Stops',
+        'Together, We Learn Better',
+        'The Future Belongs to the Intelligent',
+        'Smarter Learning Starts Here',
+        'Powered by Intelligence',
+        'Learning Never Stops',
+    ];
+
+    return (
+        <section className="overflow-hidden" style={{ background: 'linear-gradient(90deg, #6d3bef 0%, #a855c8 35%, #ef5f3a 75%, #f97316 100%)' }}>
+            <style>{`
+                @keyframes marquee-scroll {
+                    0%   { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .marquee-track {
+                    display: flex;
+                    width: max-content;
+                    animation: marquee-scroll 28s linear infinite;
+                }
+                .marquee-track:hover {
+                    animation-play-state: paused;
+                }
+            `}</style>
+
+            <div className="marquee-track py-4">
+                {phrases.map((phrase, i) => (
+                    <span
+                        key={i}
+                        className="flex items-center gap-6 px-6 text-white font-semibold text-[15px] tracking-wide whitespace-nowrap select-none"
+                    >
+                        {phrase}
+                        <span className="text-white/50 text-xs">✦</span>
+                    </span>
+                ))}
+            </div>
+        </section>
+    );
+};
+
+export default SocialProof;
+
+
+/* ==========================================================================
+   7. src/components/ValueProps.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import Link from 'next/link';
+
+const ValueProps = () => {
+    const props = [
+        {
+            title: "For Organizations",
+            description: "Deliver scalable, AI-powered training programs tailored to your organization's goals with zero friction setup.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <path d="M36 8 L64 36 L36 64 L8 36 Z" />
+                    <path d="M36 18 L54 36 L36 54 L18 36 Z" />
+                    <path d="M36 28 L44 36 L36 44 L28 36 Z" />
+                </svg>
+            )
+        },
+        {
+            title: "For Colleges & Universities",
+            description: "Empower educators and students with AI-driven content creation, delivery, and assessment tools built for academia.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <circle cx="36" cy="36" r="28" />
+                    <path d="M18 36 H54" />
+                    <path d="M36 18 V54" />
+                </svg>
+            )
+        },
+        {
+            title: "For Institutes & Academies",
+            description: "Manage courses, track learner progress, and automate assessments — all from a single intelligent dashboard.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <rect x="12" y="12" width="48" height="48" rx="8" />
+                    <path d="M24 36 L32 44 L48 28" />
+                </svg>
+            )
+        }
+    ];
+
+    return (
+        <section className="py-32 bg-[#fdfdfd]">
+            <div className="max-w-7xl mx-auto px-6">
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="font-serif text-[clamp(40px,5vw,72px)] font-normal tracking-tight text-center mb-20 text-[#111110]"
+                >
+                    Trusted. Flexible. Built for Education.
+                </motion.h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+                    {props.map((prop, index) => (
+                        <motion.div
+                            key={prop.title}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex flex-col items-start"
+                        >
+                            {prop.svg}
+                            <h3 className="text-2xl font-serif mb-4 text-[#111110]">{prop.title}</h3>
+                            <p className="text-slate-600 leading-relaxed mb-8 flex-grow">
+                                {prop.description}
+                            </p>
+                            <Link
+                                href="#"
+                                className="text-sm font-semibold text-black border-b border-slate-300 pb-0.5 hover:border-black transition-colors"
+                            >
+                                Learn more
+                            </Link>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default ValueProps;
+
+
+/* ==========================================================================
+   8. src/components/PlatformSection.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+
+const PlatformSection = () => {
+  return (
+    <section className="bg-[#0d1f0e] min-h-[700px] grid grid-cols-1 lg:grid-cols-2">
+      {/* Left: dark green bg photo + text */}
+      <div className="relative flex flex-col justify-end p-10 lg:p-20 overflow-hidden min-h-[500px]">
+        <img
+          src="/images/grid-abstract.png"
+          alt="Turnkey Platform"
+          className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay"
+        />
+        <div className="relative z-10 max-w-lg">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-serif text-[clamp(32px,4vw,48px)] text-white leading-[1.1] mb-8"
+          >
+            The all-in-one AI platform for impactful education.
+          </motion.h2>
+          <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="bg-white text-black rounded-full px-8 py-3.5 font-medium hover:bg-slate-100 transition-all active:scale-[0.98]"
+          >
+            Explore TeachGrid
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Right: dark panel with table */}
+      <div className="bg-[#0d1f0e] flex items-center justify-center p-6 lg:p-20 border-t lg:border-t-0 lg:border-l border-white/5">
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          className="bg-[#1a1a18] border border-white/10 rounded-2xl overflow-hidden w-full max-w-xl shadow-2xl"
+        >
+          {/* Analytics Table Header */}
+          <div className="p-6 border-b border-white/5 flex items-center justify-between">
+            <h3 className="text-white font-medium text-sm">Deployment Progress</h3>
+            <span className="text-xs text-white/40 uppercase tracking-widest">Real-time stats</span>
+          </div>
+
+          <div className="p-6 space-y-6">
+            {[
+              { label: 'Course Completion Rate', value: '97.4%', trend: '+3.2%', color: 'bg-emerald-500' },
+              { label: 'Active Learners', value: '12.4k', trend: '+18%', color: 'bg-indigo-500' },
+              { label: 'Content Delivery', value: '98ms', trend: '-22ms', color: 'bg-coral-500' },
+              { label: 'Time Saved', value: '820hrs', trend: 'Monthly', color: 'bg-blue-500' }
+            ].map((stat) => (
+              <div key={stat.label} className="group flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-white/60 text-sm font-medium">{stat.label}</span>
+                  <span className="text-white font-bold">{stat.value}</span>
+                </div>
+                <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    whileInView={{ width: '75%' }}
+                    viewport={{ once: true }}
+                    className={cn("h-full rounded-full opacity-80", stat.color)}
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <span className="text-[10px] font-bold text-white/30 uppercase">{stat.trend}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-6 bg-white/[0.02] border-t border-white/5">
+            <p className="text-white/40 text-xs italic">
+              &quot;Since deploying TeachGrid, our institution has seen a 40% improvement in learner engagement and course completion.&quot;
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+export default PlatformSection;
+
+
+/* ==========================================================================
+   9. src/components/IndustryCarousel.tsx
+   ========================================================================== */
+
+"use client";
+
+import React, { useRef } from 'react';
+import { motion, useScroll } from 'framer-motion';
+
+// Cohere-style grained SVG background generator
+const GrainedCard = ({ gradient, accentColor, icon, label, title, stat, statLabel }: {
+    gradient: string;
+    accentColor: string;
+    icon: React.ReactNode;
+    label: string;
+    title: string;
+    stat: string;
+    statLabel: string;
+}) => (
+    <div className="flex-shrink-0 w-[80vw] md:w-[450px] aspect-[4/5] rounded-[2rem] overflow-hidden relative group snap-start shadow-xl border border-white/5">
+        {/* Gradient base */}
+        <div className={`absolute inset-0 ${gradient}`} />
+
+        {/* Grain texture overlay — Cohere style */}
+        <div
+            className="absolute inset-0 opacity-[0.18] pointer-events-none mix-blend-overlay"
+            style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+                backgroundSize: '180px 180px',
+            }}
+        />
+
+        {/* Subtle vignette */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,transparent_40%,rgba(0,0,0,0.5)_100%)]" />
+
+        {/* Content */}
+        <div className="absolute inset-0 p-8 flex flex-col justify-between">
+            {/* Top: icon + label */}
+            <div>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-6 border border-white/10`} style={{ background: accentColor }}>
+                    {icon}
+                </div>
+                <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-white/40">{label}</span>
+            </div>
+
+            {/* Bottom: title + stat */}
+            <div>
+                <h3 className="text-white font-serif text-2xl md:text-[26px] leading-snug mb-8 tracking-tight">
+                    {title}
+                </h3>
+                <div className="h-px w-full bg-white/10 mb-6" />
+                <div className="flex items-end justify-between">
+                    <div>
+                        <p className="text-3xl font-bold text-white">{stat}</p>
+                        <p className="text-[11px] uppercase tracking-widest text-white/40 mt-1">{statLabel}</p>
+                    </div>
+                    <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center text-white/60 group-hover:border-white/50 group-hover:text-white transition-all">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const IndustryCarousel = () => {
+    const cards = [
+        {
+            gradient: 'bg-[#0f1a2e]',
+            accentColor: 'rgba(99,102,241,0.35)',
+            label: 'Course Management',
+            title: 'Build and launch structured courses in minutes, not weeks.',
+            stat: '10×',
+            statLabel: 'Faster course creation',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" /><path d="M3 9h18M9 21V9" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#0e1f16]',
+            accentColor: 'rgba(16,185,129,0.35)',
+            label: 'Learner Progress',
+            title: 'Track every learner\'s journey with real-time analytics.',
+            stat: '97%',
+            statLabel: 'Avg. completion rate',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#1a0f2e]',
+            accentColor: 'rgba(139,92,246,0.35)',
+            label: 'AI Assessments',
+            title: 'Auto-generate quizzes, assignments, and grading rubrics.',
+            stat: '5 sec',
+            statLabel: 'Assessment generation',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 11l3 3L22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#1f1508]',
+            accentColor: 'rgba(245,158,11,0.30)',
+            label: 'Live Classrooms',
+            title: 'Host live sessions, webinars, and instructor-led training.',
+            stat: '50k+',
+            statLabel: 'Live sessions hosted',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#1a1010]',
+            accentColor: 'rgba(239,68,68,0.28)',
+            label: 'Certifications',
+            title: 'Issue verifiable certificates and badges upon completion.',
+            stat: '200k+',
+            statLabel: 'Certificates issued',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="8" r="6" /><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#0a1a1a]',
+            accentColor: 'rgba(6,182,212,0.28)',
+            label: 'Integrations',
+            title: 'Connect with Zoom, GitHub, Slack, and 50+ tools seamlessly.',
+            stat: '50+',
+            statLabel: 'Native integrations',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" />
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" /><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+            ),
+        },
+        {
+            gradient: 'bg-[#131318]',
+            accentColor: 'rgba(99,102,241,0.25)',
+            label: 'White-label',
+            title: 'Launch your own branded learning portal in a single click.',
+            stat: '100%',
+            statLabel: 'Fully customisable',
+            icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
+                </svg>
+            ),
+        },
+    ];
+
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const { scrollXProgress } = useScroll({ container: scrollRef });
+
+    return (
+        <section className="py-24 bg-white overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 mb-12 flex items-end justify-between">
+                <h2 className="font-serif text-[clamp(32px,4vw,56px)] font-normal tracking-tight text-[#111110]">
+                    Everything your LMS <br /> needs to succeed
+                </h2>
+
+                {/* Progress bar */}
+                <div className="hidden md:flex h-1.5 w-64 bg-slate-100 rounded-full relative overflow-hidden">
+                    <motion.div
+                        className="absolute inset-0 bg-linear-to-r from-coral-500 via-indigo-500 to-blue-500"
+                        style={{ scaleX: scrollXProgress, transformOrigin: "left" }}
+                    />
+                </div>
+            </div>
+
+            <div
+                ref={scrollRef}
+                className="flex gap-6 overflow-x-auto pb-10 px-6 no-scrollbar snap-x snap-mandatory"
+            >
+                {cards.map((card) => (
+                    <GrainedCard key={card.label} {...card} />
+                ))}
+            </div>
+        </section>
+    );
+};
+
+export default IndustryCarousel;
+
+
+/* ==========================================================================
+   10. src/components/PlatformShowcase.tsx
+   ========================================================================== */
+
+"use client";
+
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Plus, Minus, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+
+const PlatformShowcase = () => {
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const features = [
+        {
+            title: "AI-Powered Content Creation",
+            description: "Create, deliver, and assess learning content in seconds with TeachGrid's advanced platform. Turn documents into structured courses instantly.",
+            details: ["Doc-to-Course Engine", "Auto Assessment Builder", "Multi-language Support"]
+        },
+        {
+            title: "Collaborative Learning ✨",
+            description: "Collaborate with educators and learners without missing a beat. TeachGrid keeps you in sync and ahead with real-time co-creation tools.",
+            details: ["Real-time Co-authoring", "Shared Workspaces", "Peer Review Tools"]
+        },
+        {
+            title: "Unified Learning Dashboard",
+            description: "TeachGrid brings all your educational tools together. Instantly create, track, and optimize your courses with AI-powered insights right from a single dashboard.",
+            details: ["Course Analytics", "Learner Progress Tracking", "Engagement Heatmaps"]
+        },
+        {
+            title: "Seamless Integrations",
+            description: "Connect TeachGrid to your favorite tools — Linear, Netlify, GitHub, Zoom, Discord, WhatsApp and more. Automate your workflow and focus on delivering impactful education.",
+            details: ["50+ Native Connectors", "Webhook Support", "API-first Architecture"]
+        }
+    ];
+
+    return (
+        <section className="py-32 bg-white overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6">
+                <h2 className="font-serif text-[clamp(40px,5vw,64px)] font-normal tracking-tight mb-20 text-[#111110]">
+                    Our platform. <br /> All learning.
+                </h2>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                    {/* Left: Beige/Cream AI Chat Mockup */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="aspect-[4/5] bg-[#f9f8f4] rounded-[3rem] p-10 flex flex-col shadow-inner"
+                    >
+                        <div className="mb-auto">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white">
+                                    <span className="font-bold">L</span>
+                                </div>
+                                <div className="px-4 py-2 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-[80%]">
+                                    <p className="text-sm font-medium text-slate-800">How can I create a course from my existing training materials?</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-row-reverse items-center gap-3 group">
+                                <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white">
+                                    <div className="w-4 h-4 border-2 border-white rounded-sm rotate-45" />
+                                </div>
+                                <div className="px-5 py-4 bg-[#111110] text-white rounded-2xl rounded-tr-none shadow-xl max-w-[85%] border border-white/5">
+                                    <p className="text-sm leading-relaxed mb-4">
+                                        Upload your documents and TeachGrid AI will automatically structure them into **modules**, add quizzes, and adapt content to your learners&apos; level.
+                                    </p>
+                                    <div className="h-px w-full bg-white/10 mb-4" />
+                                    <p className="text-[12px] font-bold text-emerald-400 uppercase tracking-widest">Course deployed to 38 active learners</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 pt-8 border-t border-slate-200 flex items-center justify-between">
+                            <div className="flex gap-2">
+                                <div className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-[10px]">AI</div>
+                                <p className="text-[12px] font-bold tracking-widest uppercase text-slate-400 flex items-center">Cognitive Engine v4.2</p>
+                            </div>
+                            <Link href="#" className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-indigo-600 shadow-sm border border-slate-100">
+                                <ArrowRight size={18} />
+                            </Link>
+                        </div>
+                    </motion.div>
+
+                    {/* Right: Accordion */}
+                    <div className="space-y-6">
+                        {features.map((feature, index) => (
+                            <div
+                                key={feature.title}
+                                className={cn(
+                                    "border-b border-slate-100 overflow-hidden transition-all duration-300",
+                                    activeIndex === index ? "pb-8" : "pb-6"
+                                )}
+                            >
+                                <button
+                                    onClick={() => setActiveIndex(index)}
+                                    className="w-full flex items-center justify-between text-left group"
+                                >
+                                    <h3 className={cn(
+                                        "text-2xl font-serif transition-colors",
+                                        activeIndex === index ? "text-[#111110]" : "text-slate-400 hover:text-slate-600"
+                                    )}>
+                                        {feature.title}
+                                    </h3>
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                                        activeIndex === index ? "bg-black text-white" : "bg-slate-50 text-slate-400 group-hover:text-slate-600"
+                                    )}>
+                                        {activeIndex === index ? <Minus size={16} /> : <Plus size={16} />}
+                                    </div>
+                                </button>
+
+                                <AnimatePresence>
+                                    {activeIndex === index && (
+                                        <motion.div
+                                            initial={{ height: 0, opacity: 0 }}
+                                            animate={{ height: 'auto', opacity: 1 }}
+                                            exit={{ height: 0, opacity: 0 }}
+                                            transition={{ duration: 0.3 }}
+                                        >
+                                            <div className="pt-6">
+                                                <p className="text-[17px] text-slate-600 leading-relaxed mb-8">
+                                                    {feature.description}
+                                                </p>
+                                                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    {feature.details.map((detail) => (
+                                                        <li key={detail} className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                            {detail}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        ))}
+
+                        <div className="pt-8">
+                            <Link href="#" className="inline-flex items-center gap-2 text-lg font-medium text-indigo-600 group">
+                                Download the technical specs
+                                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default PlatformShowcase;
+
+
+/* ==========================================================================
+   11. src/components/InteractiveShowcase.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+
+const InteractiveShowcase = () => {
+    return (
+        <section className="py-32 bg-[#0d1f0e] text-white overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex flex-col lg:flex-row gap-20 items-center">
+
+                    {/* Left Content */}
+                    <div className="flex-1">
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="font-serif text-[clamp(40px,5vw,64px)] font-normal tracking-tight mb-8 leading-[1.1]"
+                        >
+                            Built for educators.<br />Loved by developers.
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            className="text-white/70 text-[17px] leading-relaxed max-w-lg mb-12"
+                        >
+                            TeachGrid’s API-first architecture means you can deeply integrate learning into any product. Use our robust SDKs and webhooks to build custom learning experiences.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            className="space-y-6"
+                        >
+                            {[
+                                "Comprehensive REST & GraphQL APIs",
+                                "Real-time Event Webhooks",
+                                "SSO & Identity Management (SAML, OAuth2)",
+                                "Custom domain & whitelabeling"
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-center gap-3">
+                                    <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
+                                    <span className="text-sm font-medium">{item}</span>
+                                </div>
+                            ))}
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                            className="mt-12"
+                        >
+                            <Link href="#" className="inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-emerald-400 hover:text-emerald-300 transition-colors group">
+                                Read the Documentation
+                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </motion.div>
+                    </div>
+
+                    {/* Right Terminal View */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="flex-[1.2] w-full"
+                    >
+                        <div className="bg-[#fcfcfa] rounded-2xl overflow-hidden shadow-2xl border border-white/10 text-slate-800">
+                            {/* Window Header */}
+                            <div className="px-4 py-3 border-b border-slate-200 flex items-center gap-2 bg-white">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                </div>
+                                <div className="flex-1 text-center">
+                                    <span className="text-[10px] font-bold tracking-widest uppercase text-slate-400">docs.teachgrid.ai</span>
+                                </div>
+                            </div>
+
+                            <div className="flex">
+                                {/* Sidebar */}
+                                <div className="hidden sm:block w-48 border-r border-slate-200 p-4 bg-slate-50">
+                                    <ul className="space-y-4">
+                                        <li>
+                                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Getting Started</span>
+                                            <ul className="mt-2 space-y-2 text-sm text-slate-600 font-medium">
+                                                <li>Authentication</li>
+                                                <li className="text-indigo-600 font-bold bg-indigo-50 px-2 py-1 -mx-2 rounded">API Reference</li>
+                                                <li>Webhooks</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex-1 p-6 md:p-8">
+                                    <h3 className="text-xl font-bold font-serif mb-2 text-slate-900">Create a new course</h3>
+                                    <p className="text-sm text-slate-500 mb-6 font-medium">Generate a fully structured AI course via POST request.</p>
+
+                                    <div className="bg-[#111110] rounded-xl p-4 overflow-x-auto">
+                                        <pre className="text-sm font-mono leading-relaxed text-slate-300">
+                                            <span className="text-indigo-400">curl</span> -X POST https://api.teachgrid.ai/v1/courses \
+                                            -H <span className="text-emerald-400">"Authorization: Bearer tg_live_****"</span> \
+                                            -H <span className="text-emerald-400">"Content-Type: application/json"</span> \
+                                            -d <span className="text-coral-400">'{'{'}
+                                                "title": "Machine Learning Fundamentals",
+                                                "description": "Introductory course based on provided PDF",
+                                                "source_material": "url_to_pdf",
+                                                "ai_generation": true,
+                                                "module_count": 5
+                                                {'}'}'</span></pre>
+                                    </div>
+
+                                    <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Response</span>
+                                        <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">200 OK</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default InteractiveShowcase;
+
+
+/* ==========================================================================
+   12. src/components/SuccessStory.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const SuccessStory = () => {
+    return (
+        <section className="py-24 bg-white relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+                    {/* Left side text */}
+                    <div>
+                        {/* Fake Logo */}
+                        <div className="flex items-center gap-2 mb-12">
+                            <div className="w-8 h-8 rounded-lg bg-red-500 flex items-center justify-center text-white font-bold">R</div>
+                            <span className="font-bold text-xl tracking-tighter">RAYCAST</span>
+                        </div>
+
+                        <motion.blockquote
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="font-serif text-[clamp(28px,4vw,40px)] leading-[1.2] mb-12 text-[#111110]"
+                        >
+                            &quot;TeachGrid transformed how we onboard developers. What used to take weeks of manual documentation and training is now a seamless, AI-driven experience that gets our team shipping code on day one.&quot;
+                        </motion.blockquote>
+
+                        <div>
+                            <p className="font-bold text-[#111110]">Thomas Paul</p>
+                            <p className="text-sm font-medium text-slate-500 mb-6">Head of Engineering, Raycast</p>
+
+                            <a href="#" className="font-semibold text-sm border-b border-black pb-0.5 hover:text-indigo-600 hover:border-indigo-600 transition-colors">
+                                Read the success story
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Right side image with diagonal cut - Cohere style */}
+                    <div className="relative h-[600px] w-full lg:w-[120%] lg:-ml-10 rounded-3xl overflow-hidden shadow-2xl">
+                        {/* Diagonal clip path overlay to give that sharp edge look */}
+                        <div className="absolute inset-0 bg-blue-50" style={{ clipPath: 'polygon(15% 0, 100% 0, 100% 100%, 0% 100%)' }}>
+                            <img
+                                src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80"
+                                alt="Team collaborating"
+                                className="w-full h-full object-cover opacity-90 mix-blend-multiply"
+                            />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    );
+};
+
+export default SuccessStory;
+
+
+/* ==========================================================================
+   13. src/components/News.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+
+const News = () => {
+    const articles = [
+        {
+            date: "OCTOBER 14, 2024",
+            category: "ANNOUNCEMENT",
+            title: "Introducing TeachGrid Enterprise: Scalable Learning for Global Teams",
+            link: "#"
+        },
+        {
+            date: "SEPTEMBER 28, 2024",
+            category: "PRODUCT",
+            title: "New Feature: Multi-language AI Course Generation",
+            link: "#"
+        },
+        {
+            date: "AUGUST 15, 2024",
+            category: "RESEARCH",
+            title: "How AI is Reshaping Corporate Onboarding and Retention",
+            link: "#"
+        }
+    ];
+
+    return (
+        <section className="py-32 bg-[#fdfdfd] border-t border-slate-200">
+            <div className="max-w-7xl mx-auto px-6">
+
+                <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="font-serif text-[clamp(40px,5vw,64px)] font-normal tracking-tight leading-[1.1] text-[#111110]"
+                    >
+                        Latest updates & <br /> research.
+                    </motion.h2>
+                    <Link href="#" className="inline-flex items-center gap-2 text-sm font-semibold border border-slate-200 rounded-full px-6 py-3 hover:bg-slate-50 transition-colors">
+                        View all news <ArrowUpRight size={16} />
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {articles.map((article, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.1 }}
+                            className="group cursor-pointer"
+                        >
+                            <div className="h-48 bg-slate-100 rounded-2xl mb-6 overflow-hidden relative border border-slate-200">
+                                {/* Placeholder for news image */}
+                                <div className="absolute inset-0 bg-linear-to-br from-indigo-50 to-slate-100 group-hover:scale-105 transition-transform duration-500" />
+                            </div>
+
+                            <div className="flex items-center gap-3 mb-4 text-[11px] font-bold tracking-widest uppercase">
+                                <span className="text-slate-400">{article.date}</span>
+                                <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                <span className="text-indigo-600">{article.category}</span>
+                            </div>
+
+                            <h3 className="text-xl font-serif text-[#111110] group-hover:text-indigo-600 transition-colors leading-snug">
+                                {article.title}
+                            </h3>
+                        </motion.div>
+                    ))}
+                </div>
+
+            </div>
+        </section>
+    );
+};
+
+export default News;
+
+
+/* ==========================================================================
+   14. src/components/Footer.tsx
+   ========================================================================== */
+
+"use client";
+
+import React from 'react';
+import Link from 'next/link';
+
+const Footer = () => {
+  return (
+    <footer className="bg-[#111110] text-white pt-32 pb-8">
+      <div className="max-w-7xl mx-auto px-6">
+
+        {/* Top Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-32">
+          {/* Left: CTA */}
+          <div>
+            <h2 className="font-serif text-[clamp(48px,6vw,80px)] leading-[1.1] font-normal tracking-tight mb-8 text-coral-500">
+              Build the future <br /> of learning.
+            </h2>
+            <div className="flex items-center gap-4 max-w-md bg-white/5 p-2 rounded-full border border-white/10 focus-within:bg-white/10 focus-within:border-white/20 transition-colors">
+              <input
+                type="email"
+                placeholder="Work email"
+                className="bg-transparent border-none outline-none px-4 py-2 flex-1 text-sm text-white placeholder:text-white/40"
+              />
+              <button className="bg-white text-black px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-slate-200 transition-colors">
+                Get Started
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Links Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
+            <div>
+              <h4 className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-6">Platform</h4>
+              <ul className="space-y-4 text-sm font-medium text-white/80">
+                <li><Link href="#" className="hover:text-white transition-colors">Models</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">API</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Security</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-6">Use Cases</h4>
+              <ul className="space-y-4 text-sm font-medium text-white/80">
+                <li><Link href="#" className="hover:text-white transition-colors">Corporate Training</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Higher Education</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Customer Onboarding</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Developer Docs</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-[11px] font-bold tracking-widest uppercase text-white/40 mb-6">Company</h4>
+              <ul className="space-y-4 text-sm font-medium text-white/80">
+                <li><Link href="#" className="hover:text-white transition-colors">About Us</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Careers</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="#" className="hover:text-white transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Section */}
+        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-6">
+            {/* Replace SVG text logo with Image logo */}
+            <Link href="/" className="inline-block relative">
+              <img
+                src="/logo.png"
+                alt="TeachGrid Logo"
+                className="h-6 w-auto brightness-0 invert"
+              />
+            </Link>
+            <p className="text-xs text-white/40 font-medium">© 2024 TeachGrid Inc.</p>
+          </div>
+
+          <div className="flex items-center gap-8 text-xs font-semibold text-white/60">
+            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <div className="flex items-center gap-4 ml-4 border-l border-white/10 pl-8">
+              {/* Social Icons (simplified) */}
+              <Link href="#" className="hover:text-white transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg>
+              </Link>
+              <Link href="#" className="hover:text-white transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
+
+

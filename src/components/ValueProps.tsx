@@ -2,71 +2,77 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Layout, Settings } from 'lucide-react';
-
-const props = [
-    {
-        title: 'Security',
-        desc: 'Ensure privacy and compliance with multi-layered protection, access controls, and industry-certified security standards.',
-        icon: <div className="w-16 h-16 border-2 border-slate-200 dark:border-slate-800 rotate-45 flex items-center justify-center mb-8">
-            <div className="w-8 h-8 border border-slate-400 dark:border-slate-600" />
-        </div>
-    },
-    {
-        title: 'Deployment',
-        desc: 'Secure your institution by deploying within your virtual private cloud (VPC) environment, on-premises, or dedicated managed vault.',
-        icon: <div className="w-16 h-16 flex items-center justify-center mb-8">
-            <div className="w-14 h-14 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center">
-                <div className="w-10 h-10 rounded-full border border-slate-300 dark:border-slate-700 flex items-center justify-center">
-                    <div className="w-6 h-6 rounded-full border border-slate-400 dark:border-slate-600" />
-                </div>
-            </div>
-        </div>
-    },
-    {
-        title: 'Customization',
-        desc: 'Train our models on your proprietary data and partner with us to create unique AI solutions that fit your specific pedagogical needs.',
-        icon: <div className="w-16 h-16 grid grid-cols-5 grid-rows-5 gap-1 mb-8">
-            {[...Array(25)].map((_, i) => (
-                <div key={i} className="bg-slate-200 dark:bg-slate-800 w-full h-full" />
-            ))}
-        </div>
-    }
-];
+import Link from 'next/link';
 
 const ValueProps = () => {
+    const props = [
+        {
+            title: "For Organizations",
+            description: "Deliver scalable, AI-powered training programs tailored to your organization's goals with zero friction setup.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <path d="M36 8 L64 36 L36 64 L8 36 Z" />
+                    <path d="M36 18 L54 36 L36 54 L18 36 Z" />
+                    <path d="M36 28 L44 36 L36 44 L28 36 Z" />
+                </svg>
+            )
+        },
+        {
+            title: "For Colleges & Universities",
+            description: "Empower educators and students with AI-driven content creation, delivery, and assessment tools built for academia.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <circle cx="36" cy="36" r="28" />
+                    <path d="M18 36 H54" />
+                    <path d="M36 18 V54" />
+                </svg>
+            )
+        },
+        {
+            title: "For Institutes & Academies",
+            description: "Manage courses, track learner progress, and automate assessments — all from a single intelligent dashboard.",
+            svg: (
+                <svg viewBox="0 0 72 72" fill="none" stroke="#111110" strokeWidth="1.3" className="w-16 h-16 mb-8">
+                    <rect x="12" y="12" width="48" height="48" rx="8" />
+                    <path d="M24 36 L32 44 L48 28" />
+                </svg>
+            )
+        }
+    ];
+
     return (
-        <section className="relative py-32 bg-background overflow-hidden">
-            {/* Grain Background */}
-            <div className="absolute inset-0 -z-10 opacity-[0.2] dark:opacity-[0.1] grayscale pointer-events-none">
-                <img
-                    src="/images/premium-hero.png"
-                    alt=""
-                    className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-overlay"
-                />
-            </div>
-            <div className="container mx-auto px-6">
-                <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-20 text-center">
-                    Safe. Flexible. Built for learning.
-                </h2>
+        <section className="py-32 bg-[#fdfdfd]">
+            <div className="max-w-7xl mx-auto px-6">
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="font-serif text-[clamp(40px,5vw,72px)] font-normal tracking-tight text-center mb-20 text-[#111110]"
+                >
+                    Trusted. Flexible. Built for Education.
+                </motion.h2>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
-                    {props.map((p, i) => (
+                    {props.map((prop, index) => (
                         <motion.div
-                            key={p.title}
+                            key={prop.title}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: i * 0.1 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex flex-col items-start"
                         >
-                            {p.icon}
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">{p.title}</h3>
-                            <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                                {p.desc}
+                            {prop.svg}
+                            <h3 className="text-2xl font-serif mb-4 text-[#111110]">{prop.title}</h3>
+                            <p className="text-slate-600 leading-relaxed mb-8 flex-grow">
+                                {prop.description}
                             </p>
-                            <button className="text-slate-900 dark:text-white font-bold flex items-center gap-2 group">
+                            <Link
+                                href="#"
+                                className="text-sm font-semibold text-black border-b border-slate-300 pb-0.5 hover:border-black transition-colors"
+                            >
                                 Learn more
-                                <span className="group-hover:translate-x-1 transition-transform">→</span>
-                            </button>
+                            </Link>
                         </motion.div>
                     ))}
                 </div>

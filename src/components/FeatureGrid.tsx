@@ -35,7 +35,7 @@ const FeatureGrid = () => {
                                         $18.5 million upside
                                     </div>
                                     <p className="text-slate-400 text-sm leading-relaxed">
-                                        &quot;TeachGrid AI identified significant optimization opportunities in our student lifecycle management...&quot;
+                                        &ldquo;TeachGrid AI identified significant optimization opportunities in our student lifecycle management&hellip;&rdquo;
                                     </p>
                                     <div className="inline-flex px-3 py-1 rounded-full bg-white text-slate-900 text-[12px] font-bold">
                                         expanded deal sizes
@@ -59,8 +59,6 @@ const FeatureGrid = () => {
                             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
-
-                        {/* Small floating label or text could go here, or keep it clean like Cohere */}
                     </motion.div>
                 </div>
             </div>

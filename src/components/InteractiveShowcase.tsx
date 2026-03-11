@@ -1,154 +1,136 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Layout, Box, Share2, GitBranch } from 'lucide-react';
-
-const features = [
-    {
-        id: 'ta',
-        title: 'Teaching Assistant',
-        desc: 'Automate lesson planning, student queries, and personalized feedback loops with state-of-the-art pedagogical AI.',
-        icon: <Layout className="w-5 h-5" />,
-        content: {
-            title: 'Pedagogical Intelligence Agent',
-            subtitle: 'Analyze student performance data to generate personalized remedial tracks for the next semester.',
-            file: 'PERFORMANCE_REPORT_Q3.XLS',
-            size: '14.2 MB'
-        }
-    },
-    {
-        id: 'ca',
-        title: 'Content Automator',
-        desc: 'Generate interactive course materials, quizzes, and summaries from raw documents or video lectures instantly.',
-        icon: <Box className="w-5 h-5" />,
-        content: {
-            title: 'Course Synthesis Agent',
-            subtitle: 'Transform 12 hours of video lectures into a 50-page interactive study guide with auto-generated assessments.',
-            file: 'COURSE_SYLLABUS_GEN.PDF',
-            size: '8.5 MB'
-        }
-    },
-    {
-        id: 'gi',
-        title: 'Grading Intelligence',
-        desc: 'Scalable automated grading for essays and complex assignments with human-in-the-loop verification patterns.',
-        icon: <GitBranch className="w-5 h-5" />,
-        content: {
-            title: 'Assessment Validatior',
-            subtitle: 'Scan 500+ student essays for semantic understanding and provide detailed constructive feedback rubrics.',
-            file: 'GRADING_MATRIX_FINAL.JSON',
-            size: '2.1 MB'
-        }
-    }
-];
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const InteractiveShowcase = () => {
-    const [activeTab, setActiveTab] = useState(features[0]);
-
     return (
-        <section className="py-24 bg-background overflow-hidden">
-            <div className="container mx-auto px-6">
-                <div className="relative rounded-[3rem] overflow-hidden aspect-[21/9] min-h-[600px] border border-slate-200 dark:border-slate-800 shadow-2xl">
-                    {/* Background Image */}
-                    <img
-                        src="/images/mountain-bg.png"
-                        alt="AI Landscape"
-                        className="absolute inset-0 w-full h-full object-cover grayscale opacity-80 dark:opacity-40"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent" />
+        <section className="py-32 bg-[#0d1f0e] text-white overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6">
+                <div className="flex flex-col lg:flex-row gap-20 items-center">
 
-                    {/* Sidebar UI */}
-                    <div className="absolute inset-y-0 left-0 w-full md:w-[450px] p-8 md:p-12 flex flex-col justify-center">
-                        <div className="flex gap-4 mb-12">
-                            <div className="w-10 h-10 rounded-lg bg-green-500/20 border border-green-500/50 flex items-center justify-center">
-                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            </div>
-                            <h3 className="text-3xl font-bold text-white tracking-tight">TeachGrid Agents</h3>
-                        </div>
+                    {/* Left Content */}
+                    <div className="flex-1">
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="font-serif text-[clamp(40px,5vw,64px)] font-normal tracking-tight mb-8 leading-[1.1]"
+                        >
+                            Built for educators.<br />Loved by developers.
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            className="text-white/70 text-[17px] leading-relaxed max-w-lg mb-12"
+                        >
+                            TeachGrid’s API-first architecture means you can deeply integrate learning into any product. Use our robust SDKs and webhooks to build custom learning experiences.
+                        </motion.p>
 
-                        <div className="space-y-4">
-                            {features.map((f) => (
-                                <button
-                                    key={f.id}
-                                    onClick={() => setActiveTab(f)}
-                                    className={`group w-full text-left p-6 rounded-2xl transition-all border ${activeTab.id === f.id
-                                        ? 'bg-white/10 border-white/20 backdrop-blur-md shadow-xl'
-                                        : 'bg-transparent border-transparent hover:bg-white/5'
-                                        }`}
-                                >
-                                    <div className="flex items-center gap-4 mb-2">
-                                        <div className={`${activeTab.id === f.id ? 'text-green-400' : 'text-slate-400 group-hover:text-white'} transition-colors`}>
-                                            {f.icon}
-                                        </div>
-                                        <span className={`font-bold transition-colors ${activeTab.id === f.id ? 'text-white' : 'text-slate-400 group-hover:text-white'}`}>
-                                            {f.title}
-                                        </span>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            className="space-y-6"
+                        >
+                            {[
+                                "Comprehensive REST & GraphQL APIs",
+                                "Real-time Event Webhooks",
+                                "SSO & Identity Management (SAML, OAuth2)",
+                                "Custom domain & whitelabeling"
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-center gap-3">
+                                    <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
                                     </div>
-                                    {activeTab.id === f.id && (
-                                        <motion.p
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            className="text-slate-300 text-sm leading-relaxed"
-                                        >
-                                            {f.desc}
-                                        </motion.p>
-                                    )}
-                                </button>
+                                    <span className="text-sm font-medium">{item}</span>
+                                </div>
                             ))}
-                        </div>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                            className="mt-12"
+                        >
+                            <Link href="#" className="inline-flex items-center gap-2 text-sm font-bold tracking-widest uppercase text-emerald-400 hover:text-emerald-300 transition-colors group">
+                                Read the Documentation
+                                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </motion.div>
                     </div>
 
-                    {/* Content Widget Overlay */}
-                    <div className="absolute top-1/2 -translate-y-1/2 right-12 hidden lg:block w-[500px]">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={activeTab.id}
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -20 }}
-                                className="bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
-                            >
-                                {/* Noise Overlay */}
-                                <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+                    {/* Right Terminal View */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        className="flex-[1.2] w-full"
+                    >
+                        <div className="bg-[#fcfcfa] rounded-2xl overflow-hidden shadow-2xl border border-white/10 text-slate-800">
+                            {/* Window Header */}
+                            <div className="px-4 py-3 border-b border-slate-200 flex items-center gap-2 bg-white">
+                                <div className="flex gap-1.5">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
+                                </div>
+                                <div className="flex-1 text-center">
+                                    <span className="text-[10px] font-bold tracking-widest uppercase text-slate-400">docs.teachgrid.ai</span>
+                                </div>
+                            </div>
 
-                                <div className="relative z-10">
-                                    <div className="flex items-center gap-4 mb-8">
-                                        <div className="w-12 h-12 rounded-xl bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400">
-                                            {activeTab.icon}
-                                        </div>
-                                        <h4 className="text-xl font-bold text-white">{activeTab.content.title}</h4>
+                            <div className="flex">
+                                {/* Sidebar */}
+                                <div className="hidden sm:block w-48 border-r border-slate-200 p-4 bg-slate-50">
+                                    <ul className="space-y-4">
+                                        <li>
+                                            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Getting Started</span>
+                                            <ul className="mt-2 space-y-2 text-sm text-slate-600 font-medium">
+                                                <li>Authentication</li>
+                                                <li className="text-indigo-600 font-bold bg-indigo-50 px-2 py-1 -mx-2 rounded">API Reference</li>
+                                                <li>Webhooks</li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                {/* Content */}
+                                <div className="flex-1 p-6 md:p-8">
+                                    <h3 className="text-xl font-bold font-serif mb-2 text-slate-900">Create a new course</h3>
+                                    <p className="text-sm text-slate-500 mb-6 font-medium">Generate a fully structured AI course via POST request.</p>
+
+                                    <div className="bg-[#111110] rounded-xl p-4 overflow-x-auto">
+                                        <pre className="text-sm font-mono leading-relaxed text-slate-300">
+                                            <span className="text-indigo-400">curl</span> -X POST https://api.teachgrid.ai/v1/courses \
+                                            -H <span className="text-emerald-400">"Authorization: Bearer tg_live_****"</span> \
+                                            -H <span className="text-emerald-400">"Content-Type: application/json"</span> \
+                                            -d <span className="text-coral-400">'{'{'}
+                                                "title": "Machine Learning Fundamentals",
+                                                "description": "Introductory course based on provided PDF",
+                                                "source_material": "url_to_pdf",
+                                                "ai_generation": true,
+                                                "module_count": 5
+                                                {'}'}'</span></pre>
                                     </div>
 
-                                    <p className="text-slate-300 text-lg mb-8 leading-relaxed">
-                                        {activeTab.content.subtitle}
-                                    </p>
-
-                                    <div className="bg-black/40 border border-white/5 rounded-2xl p-4 flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="p-2 rounded-lg bg-green-500/10 text-green-400">
-                                                <Layout className="w-5 h-5" />
-                                            </div>
-                                            <div>
-                                                <div className="text-white font-mono text-sm uppercase tracking-wider">{activeTab.content.file}</div>
-                                                <div className="text-green-500/60 font-mono text-[10px]">{activeTab.content.size}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center text-slate-500 font-mono text-xs">
-                                        <span>UNITS ACTIVATED: 2,492</span>
-                                        <div className="flex gap-2">
-                                            <div className="w-1 h-1 rounded-full bg-green-500" />
-                                            <div className="w-1 h-3 rounded-full bg-green-500/30" />
-                                            <div className="w-1 h-2 rounded-full bg-green-500/50" />
-                                        </div>
+                                    <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+                                        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Response</span>
+                                        <span className="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded">200 OK</span>
                                     </div>
                                 </div>
-                            </motion.div>
-                        </AnimatePresence>
-                    </div>
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Serif+Display:ital@0;1&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -6,7 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
 
   --color-primary: var(--primary);
@@ -22,6 +24,8 @@
 }
 
 :root {
+  --font-serif: 'DM Serif Display', Georgia, serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
   --background: #fdfdfd;
   --foreground: #0f172a;
 
@@ -55,7 +59,8 @@
   }
 
   body {
-    @apply bg-background text-foreground selection:bg-indigo-100 selection:text-indigo-900 relative min-h-screen;
+    @apply bg-background text-foreground selection:bg-indigo-100 selection:text-indigo-900 relative min-h-screen text-[15px] antialiased;
+    font-family: var(--font-sans);
   }
 
   body::before {
